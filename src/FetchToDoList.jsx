@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import ToDoList from './ToDoList';
 import ToDoInput from './ToDoInput';
+import api from './api';
 
-const FetchToDoList = ({ url, showCompleted }) => {
+const FetchToDoList = ({ showCompleted }) => {
   const [todos, setTodos] = useState();
   const [filteredTodos, setFilteredTodos] = useState();
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const response = await fetch(url);
-      const remoteTodos = await response.json();
+      const remoteTodos = await api.readItems();
       setTodos(remoteTodos);
     };
     fetchTodos();
-  }, [url]);
+  }, []);
 
   useEffect(() => {
     if (showCompleted) {
@@ -31,15 +31,7 @@ const FetchToDoList = ({ url, showCompleted }) => {
       return todo;
     });
 
-    await fetch(`${url}/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ isCompleted: newState }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
+    await api.updateItem(id, { isCompleted: newState });
     setTodos(newTodos);
   };
 
@@ -50,14 +42,7 @@ const FetchToDoList = ({ url, showCompleted }) => {
       isCompleted: false,
     };
 
-    await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(newTodo),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+    await api.createItem(newTodo);
     setTodos([...todos, newTodo]);
   };
 

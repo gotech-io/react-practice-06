@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import styled from '@emotion/styled/macro';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import consts from './consts';
 import { ThemeContext } from './themeContext';
 import Checkbox from './Checkbox';
+import api from './api';
 
 const BackButton = styled.a`
   display: inline-block;
@@ -43,8 +43,7 @@ const ToDoItemPage = () => {
 
   useEffect(() => {
     const fetchTodo = async () => {
-      const response = await fetch(`${consts.serverUrl}/${itemId}`);
-      const remoteTodo = await response.json();
+      const remoteTodo = await api.readItem(itemId);
       setTodo(remoteTodo);
     };
     fetchTodo();
@@ -54,23 +53,14 @@ const ToDoItemPage = () => {
   const handleChange = async (e) => {
     const newState = e.currentTarget.checked;
 
-    await fetch(`${consts.serverUrl}/${itemId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ isCompleted: newState }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+    await api.updateItem(itemId, { isCompleted: newState });
     const newTodo = { ...todo, isCompleted: newState };
     navigate(location.pathname, { replace: true, state: { todo: newTodo } });
     setTodo(newTodo);
   };
 
   const handleDelete = async () => {
-    await fetch(`${consts.serverUrl}/${itemId}`, {
-      method: 'DELETE',
-    });
+    await api.deleteItem(itemId);
     navigate('/');
   };
 
