@@ -59,8 +59,8 @@ const FetchToDoList = ({ showCompleted }) => {
   }, [showCompleted]);
 
   const handleChange = async (id, newState) => {
-    dispatch({ type: 'todo-updated', payload: { id, isCompleted: newState } });
     await api.updateItem(id, { isCompleted: newState });
+    dispatch({ type: 'todo-updated', payload: { id, isCompleted: newState } });
   };
 
   const handleAdd = async (title) => {
