@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import FetchToDoList from './FetchToDoList';
 import CompletedToggle from './CompletedToggle';
-import consts from './consts';
 
 const ToDoListPage = () => {
   const [showCompleted, setShowCompleted] = useState(true);
@@ -13,7 +12,7 @@ const ToDoListPage = () => {
         initialState={showCompleted}
         onChange={setShowCompleted}
       />
-      <FetchToDoList url={consts.serverUrl} showCompleted={showCompleted} />
+      <FetchToDoList showCompleted={showCompleted} />
     </>
   );
 };
